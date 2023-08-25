@@ -9,7 +9,7 @@ public async Task Main()
 {
     await RenderToBitmap(
         "./assets/weather-template.xaml"
-        // Use streams not strings!
+        // Use streams not strings! This is just a short example.
         , JsonSerializer.Deserialize<WeatherForecast>(
             File.ReadAllText( "./data/forecast.json" ) )
         , new XamlRender()
