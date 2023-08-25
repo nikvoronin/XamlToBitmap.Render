@@ -1,1 +1,34 @@
 # XamlToBitmap.Render
+
+Renders XAML with binded data context into the in-memory bitmap stream.
+
+## How to use
+
+```csharp
+public async Task Main()
+{
+    await RenderToBitmap(
+        "./assets/weather-template.xaml"
+        // Use streams not strings! This is just a short example.
+        , JsonSerializer.Deserialize<WeatherForecast>(
+            File.ReadAllText( "./data/forecast.json" ) )
+        , new XamlRender()
+        , $"./outbox/image{DateTime.Now.Ticks}.png"
+    );
+}
+
+public static async Task RenderToBitmap(
+    string pathToXamlFile
+    , object dataContext
+    , IContentRender renderer
+    , string saveToPath )
+{
+    using Stream stream = File.OpenRead( pathToXamlFile );
+    using MemoryStream imageStream =
+        await renderer.RenderAsync(
+            stream, dataContext,
+            printer.Resolution.X, printer.Resolution.Y );
+
+    File.WriteAllBytes( saveToPath, imageStream.GetBuffer() );
+}
+```
