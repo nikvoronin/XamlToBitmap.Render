@@ -13,7 +13,6 @@ public async Task Main()
         , JsonSerializer.Deserialize<WeatherForecast>(
             File.ReadAllText( "./data/forecast.json" ) )
         , new XamlRender()
-        , ThermalPrinter_DefaultResolutionDpi
         , $"./outbox/image{DateTime.Now.Ticks}.png"
     );
 }
@@ -22,18 +21,16 @@ public static async Task RenderToBitmap(
     string pathToXamlFile
     , object dataContext
     , IContentRender renderer
-    , double resolutionDpi
     , string saveToPath )
 {
     using Stream stream = File.OpenRead( pathToXamlFile );
     using MemoryStream imageStream =
         await renderer.RenderAsync(
             stream, dataContext,
-            resolutionDpi, resolutionDpi );
+            XamlRender.ThermalPrinter_CommonDpi, XamlRender.ThermalPrinter_CommonDpi );
 
     File.WriteAllBytes( saveToPath, imageStream.GetBuffer() );
 }
 
-public const double ThermalPrinter_DefaultResolutionDpi = 203;
-public const double ThermalPrinter_HiResolutionDpi = 304;
+public const double ThermalPrinter_HiResDpi = 304;
 ```
